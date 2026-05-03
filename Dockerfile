@@ -13,11 +13,16 @@ RUN git clone --depth 1 https://github.com/ggml-org/llama.cpp /llama.cpp
 
 WORKDIR /llama.cpp
 
-RUN cmake -B build -G Ninja \
+# libcuda.so.1 is injected by the NVIDIA runtime at container start, not at build time.
+# Point cmake at the stub library so linking succeeds; the real driver is used at runtime.
+RUN ln -sf /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
+    && cmake -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
         -DGGML_CUDA=ON \
         -DGGML_FLASH_ATTN=ON \
         -DCMAKE_CUDA_ARCHITECTURES=120 \
+        -DCMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,/usr/local/cuda/lib64/stubs" \
+        -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath-link,/usr/local/cuda/lib64/stubs" \
     && cmake --build build --target llama-server llama-cli
 
 
@@ -34,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libcurl4 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir --break-system-packages "huggingface-hub[cli]" "aiohttp"
+RUN pip3 install --no-cache-dir "huggingface-hub[cli]" "aiohttp"
 
 RUN wget -qO- cli.runpod.net | bash
 
