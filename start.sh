@@ -13,7 +13,7 @@ fi
 
 # ── HuggingFace login ─────────────────────────────────────────────────────────
 echo "==> Logging into HuggingFace..."
-huggingface-cli login --token "$HF_TOKEN" --quiet
+hf auth login --token "$HF_TOKEN" --quiet
 
 # ── Parse MODEL_URL (format: hf_repo:filename_pattern) ───────────────────────
 REPO="${MODEL_URL%%:*}"
@@ -36,7 +36,7 @@ MODEL_FILE=$(find "$MODEL_DIR" -name "*${PATTERN}*.gguf" 2>/dev/null | sort | he
 
 if [ -z "$MODEL_FILE" ]; then
     echo "==> Downloading ${REPO} matching *${PATTERN}*.gguf ..."
-    huggingface-cli download "$REPO" \
+    hf download "$REPO" \
         --include "*${PATTERN}*.gguf" \
         --local-dir "$MODEL_DIR"
     MODEL_FILE=$(find "$MODEL_DIR" -name "*${PATTERN}*.gguf" | sort | head -1)
