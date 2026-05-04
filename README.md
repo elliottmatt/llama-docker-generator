@@ -103,6 +103,21 @@ curl https://<your-runpod-endpoint>/v1/chat/completions \
   }'
 ```
 
+### 5. Use with Claude Code
+
+llama-server exposes an Anthropic-compatible API, so you can point Claude Code directly at it:
+
+```bash
+export ANTHROPIC_BASE_URL=https://<pod-id>-8080.proxy.runpod.net
+export ANTHROPIC_API_KEY=sk-ant-<your-LLAMA_API_KEY>
+export ANTHROPIC_MODEL=Qwen3.6-27B-UD-Q5_K_XL.gguf
+claude
+```
+
+- `ANTHROPIC_BASE_URL` — your RunPod proxy URL (find it in the pod's Connect tab)
+- `ANTHROPIC_API_KEY` — must start with `sk-ant-` or Claude Code will reject it; use this same value for `LLAMA_API_KEY` on the pod
+- `ANTHROPIC_MODEL` — the model filename as reported by `/v1/models`
+
 ## Context length and VRAM
 
 The RTX 5090 has 32 GB VRAM. At 200k context, KV cache is the dominant cost.
