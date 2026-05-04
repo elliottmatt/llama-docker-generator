@@ -20,6 +20,7 @@ RUN ln -sf /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/li
         -DCMAKE_BUILD_TYPE=Release \
         -DGGML_CUDA=ON \
         -DGGML_FLASH_ATTN=ON \
+        -DBUILD_SHARED_LIBS=OFF \
         -DCMAKE_CUDA_ARCHITECTURES=120 \
         -DCMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,/usr/local/cuda/lib64/stubs" \
         -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath-link,/usr/local/cuda/lib64/stubs" \
