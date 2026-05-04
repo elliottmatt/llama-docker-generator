@@ -1,6 +1,6 @@
 FROM ghcr.io/elliottmatt/llama-runpod:latest
 
-ENV MODEL_URL="unsloth/Qwen3-27B-GGUF:UD-Q5_K_XL"
+ENV MODEL_URL="unsloth/Qwen3.6-27B-GGUF:UD-Q5_K_XL"
 
 # Context: 200k, KV cache q4_0 to fit on single RTX 5090 (32GB)
 # Sampling: general/writing mode (temperature=1.0, thinking mode)
