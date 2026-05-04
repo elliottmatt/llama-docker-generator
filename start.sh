@@ -49,9 +49,6 @@ fi
 
 echo "==> Model: $MODEL_FILE"
 
-# ── Start watchdog (shuts pod after 15 min idle) ──────────────────────────────
-/watchdog.sh &
-
 # ── Start llama-server on internal port (not publicly exposed) ────────────────
 INTERNAL_PORT=8081
 echo "==> Starting llama-server on internal port ${INTERNAL_PORT} ..."
@@ -66,18 +63,25 @@ llama-server \
 LLAMA_PID=$!
 
 # ── Wait for llama-server to be ready ────────────────────────────────────────
-echo "==> Waiting for llama-server to be ready..."
+echo "==> Waiting for llama-server to be ready (model load may take several minutes)..."
 for i in $(seq 1 120); do
     if curl -sf "http://127.0.0.1:${INTERNAL_PORT}/health" > /dev/null 2>&1; then
-        echo "==> llama-server ready"
+        echo "==> llama-server ready after $((i * 2))s"
         break
     fi
     if ! kill -0 "$LLAMA_PID" 2>/dev/null; then
         echo "ERROR: llama-server exited unexpectedly"
         exit 1
     fi
+    if [ $((i % 15)) -eq 0 ]; then
+        echo "==> Still loading... ($((i * 2))s elapsed)"
+    fi
     sleep 2
 done
+
+# ── Start watchdog (shuts pod after 15 min idle) ──────────────────────────────
+echo "==> Watchdog started (idle timeout: 900s)"
+/watchdog.sh &
 
 # ── Start proxy on public port (foreground) ───────────────────────────────────
 PUBLIC_PORT="${LLAMA_PORT:-8080}"
