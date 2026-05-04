@@ -1,5 +1,5 @@
 # ── Stage 1: Builder ─────────────────────────────────────────────────────────
-FROM nvidia/cuda:13.1.0-devel-ubuntu22.04 AS builder
+FROM nvidia/cuda:13.0.0-devel-ubuntu22.04 AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -28,7 +28,7 @@ RUN ln -sf /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/li
 
 
 # ── Stage 2: Runtime ─────────────────────────────────────────────────────────
-FROM nvidia/cuda:13.1.0-runtime-ubuntu22.04
+FROM nvidia/cuda:13.0.0-runtime-ubuntu22.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 \
