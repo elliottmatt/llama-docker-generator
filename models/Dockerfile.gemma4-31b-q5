@@ -1,0 +1,6 @@
+FROM ghcr.io/elliottmatt/llama-runpod:latest
+
+ENV MODEL_URL="mradermacher/gemma-4-31B-GGUF:Q5_K_M"
+
+# Context: 128k, KV cache q4_0 (~10GB headroom after 21.8GB model on single RTX 5090)
+ENV LLAMA_ARGS="-c 131072 -ctk q4_0 -ctv q4_0 -ngl 99 -np 1 --temp 1.0 --top-p 0.95 --top-k 40 --min-p 0.0"
