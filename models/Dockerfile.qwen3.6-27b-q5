@@ -1,3 +1,5 @@
+# Target hardware: 1x RTX 5090 (32GB VRAM)
+# Model: ~18GB — leaves ~14GB for KV cache
 FROM ghcr.io/elliottmatt/llama-runpod:latest
 
 ENV MODEL_URL="unsloth/Qwen3.6-27B-GGUF:UD-Q5_K_XL"
